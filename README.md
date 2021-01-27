@@ -12,3 +12,13 @@ SMILE: Mutual Information Learning for Integration of Single Cell Omics Data
 * scanpy
 * anndata
 * pytorch
+
+# Tutorial
+
+|For use of SMILE in multi-source single-cell transcriptome data
+
+|----.ipynb
+
+|For use of SMILE in integration of multimodal single-cell data
+
+|----.ipynb
