@@ -15,10 +15,10 @@ SMILE: Mutual Information Learning for Integration of Single Cell Omics Data
 
 # Tutorial
 
-|For use of SMILE in multi-source single-cell transcriptome data
+For use of SMILE in multi-source single-cell transcriptome data
 
 |----SMILE_MouserCortex_RNAseq_example.ipynb
 
-|For use of SMILE in integration of multimodal single-cell data
+For use of SMILE in integration of multimodal single-cell data
 
 |----SMILE_Celllines_RNA-ATAC-integration_example.ipynb
