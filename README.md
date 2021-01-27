@@ -21,4 +21,4 @@ SMILE: Mutual Information Learning for Integration of Single Cell Omics Data
 
 |For use of SMILE in integration of multimodal single-cell data
 
-|----.ipynb
+|----SMILE_Celllines_RNA-ATAC-integration_example.ipynb
