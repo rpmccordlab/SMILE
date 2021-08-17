@@ -16,16 +16,19 @@ SMILE: Mutual Information Learning for Integration of Single Cell Omics Data
 # Tutorial
 
 ### For quick start
-  from SMILE import SMILE
-  from SMILE.SMILE import PairedSMILE_trainer
-  net = SMILE.Paired_SMILE(input_dim_a=rna_X.shape[1],input_dim_b=dna_X.shape[1],clf_out=25)##rna_X: RNA-seq data; dna_X: ATAC-seq data
-  PairedSMILE_trainer(X_a = rna_X, X_b = dna_X, model = net, num_epoch=10)
+    from SMILE import SMILE
+    
+    from SMILE.SMILE import PairedSMILE_trainer
+    
+    net = SMILE.Paired_SMILE(input_dim_a=rna_X.shape[1],input_dim_b=dna_X.shape[1],clf_out=25)##rna_X: RNA-seq data; dna_X: ATAC-seq data
+    
+    PairedSMILE_trainer(X_a = rna_X, X_b = dna_X, model = net, num_epoch=10)
 
 ### For detail
-For use of SMILE in multi-source single-cell transcriptome data
+    For use of SMILE in multi-source single-cell transcriptome data
 
-|----SMILE_MouserCortex_RNAseq_example.ipynb
+    |----SMILE_MouserCortex_RNAseq_example.ipynb
 
-For use of SMILE in integration of multimodal single-cell data
+    For use of SMILE in integration of multimodal single-cell data
 
-|----SMILE_Celllines_RNA-ATAC-integration_example.ipynb
+    |----SMILE_Celllines_RNA-ATAC-integration_example.ipynb
