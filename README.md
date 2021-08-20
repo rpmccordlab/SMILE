@@ -19,7 +19,9 @@ SMILE: Mutual Information Learning for Integration of Single Cell Omics Data
     from SMILE import SMILE
     from SMILE.SMILE import PairedSMILE_trainer
     ##rna_X: RNA-seq data; dna_X: ATAC-seq data
-    ##Both rna_X and dna_X are matrices in which each row represents one cell while each column stands for a feature
+    ##Both rna_X and dna_X are matrices in which each row represents one cell 
+    ##while each column stands for a feature
+    ##each row in rna_X and dna_X is paired for training purpose 
     net = SMILE.Paired_SMILE(input_dim_a=rna_X.shape[1],input_dim_b=dna_X.shape[1],clf_out=25)
     PairedSMILE_trainer(X_a = rna_X, X_b = dna_X, model = net, num_epoch=10)
 
