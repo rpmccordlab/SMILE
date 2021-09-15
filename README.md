@@ -33,3 +33,8 @@ SMILE: Mutual Information Learning for Integration of Single Cell Omics Data
     For use of SMILE in integration of multimodal single-cell data
 
     |----SMILE_Celllines_RNA-ATAC-integration_example.ipynb
+    
+### For screening key genes that contribute co-embedding
+
+    |----screen_factors_for_coembedding.py
+    Processed data can be found at https://figshare.com/articles/dataset/Mouse_skin_data_by_SHARE-seq/16620367
