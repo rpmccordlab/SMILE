@@ -164,3 +164,68 @@ def PairedSMILE_trainer(X_a, X_b, model, batch_size = 512, num_epoch=5,
             losses += loss.data.tolist()
         print("Total loss: "+str(round(losses,4)))
         gc.collect()
+        
+        
+def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, model, batch_size = 512, num_epoch=5, 
+                        f_temp = 0.1, p_temp = 1.0):
+    
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    f_con = ContrastiveLoss(batch_size = batch_size,temperature = f_temp)
+    p_con = ContrastiveLoss(batch_size = model.clf_out,temperature = p_temp)
+    opt = torch.optim.SGD(model.parameters(),lr=0.01, momentum=0.9,weight_decay=5e-4)
+    
+    for k in range(num_epoch):
+        
+        model.to(device)
+        n = X_a.shape[0]
+        r = np.random.permutation(n)
+        X_train_a = X_a[r,:]
+        X_tensor_A=torch.tensor(X_train_a).float()
+        X_train_b = X_b[r,:]
+        X_tensor_B=torch.tensor(X_train_b).float()
+        
+        n2 = X_a_unpaired.shape[0]
+        r = np.random.permutation(n2)
+        X_train_a_u = X_a_unpaired[r,:]
+        X_tensor_Au=torch.tensor(X_train_a_u).float()
+    
+        n2 = dna_X_unpaired.shape[0]
+        r = np.random.permutation(n2)
+        X_train_b_u = X_b_unpaired[r,:]
+        X_tensor_Bu=torch.tensor(X_train_b_u).float()
+        n= min(X_a.shape[0],X_a_unpaired.shape[0],X_b_unpaired.shape[0])
+        
+        losses = 0
+        
+        for j in range(n//batch_size):
+            inputs_a = X_tensor_A[j*batch_size:(j+1)*batch_size,:].to(device)
+            inputs_au = X_tensor_Au[j*batch_size:(j+1)*batch_size,:].to(device)
+            inputs_au2 = inputs_au + torch.normal(0,1,inputs_au.shape).to(device)
+            inputs_au = inputs_au + torch.normal(0,1,inputs_au.shape).to(device)
+            
+            inputs_b = X_tensor_B[j*batch_size:(j+1)*batch_size,:].to(device)
+            inputs_bu = X_tensor_Bu[j*batch_size:(j+1)*batch_size,:].to(device)
+            inputs_bu2 = inputs_bu + torch.normal(0,1,inputs_bu.shape).to(device)
+            inputs_bu = inputs_bu + torch.normal(0,1,inputs_bu.shape).to(device)
+            
+            feas,o,nfeas,no = net(inputs_a,inputs_b)
+            feasu,ou,nfeasu,nou = net(inputs_au,inputs_bu)
+            feasu2,ou2,nfeasu2,nou2 = net(inputs_au2,inputs_bu2)
+            f_a = net.encoder_a(inputs_a)
+            f_b = net.encoder_b(inputs_b)
+        
+            fea_mi = f_con(feas,nfeas)+f_con(feas,feas2)
+            p_mi = p_con(o.T,no.T)+p_con(o.T,o2.T)
+        
+            mse_loss = mse(f_a,f_b)#*2.0
+            fea_mi = f_con(feas,nfeas)*5.0+f_con(feasu,feasu2)+f_con(nfeasu,nfeasu2)#*5.0 or 4.0
+            p_mi = p_con(o.T,no.T)*5.0+p_con(ou.T,ou2.T)+p_con(nou.T,nou2.T)#*5.0 or 4.0
+        
+            loss = fea_mi + p_mi + mse_loss
+            opt.zero_grad()
+            loss.backward()
+            opt.step()
+        
+            losses += loss.data.tolist()
+        print("Total loss: "+str(round(losses,4)))
+        gc.collect()  
