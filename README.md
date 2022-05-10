@@ -15,7 +15,7 @@ SMILE: Mutual Information Learning for Integration of Single Cell Omics Data
 
 ## Update 05/09/2022
     ##rna_X: RNA-seq data; dna_X: ATAC-seq data, rna_X and dna_X are paired data
-    ##rna_X_unpaired: RNA-seq data; dna_X_unpaired: ATAC-seq data, rna_X_unpaired and dna_X_unpaired are unpaired data. We could integrate unpaired data
+    ##rna_X_unpaired: RNA-seq data; dna_X_unpaired: ATAC-seq data, rna_X_unpaired and dna_X_unpaired are unpaired data, and we wish to integrate unpaired data
     ##Both rna_X and dna_X are matrices in which each row represents one cell while each column stands for a feature
     ##each row in rna_X and dna_X is paired for training purpose
     ##Within modality, for example rna_X and rna_X_unpaired, data share the same feature space
