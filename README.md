@@ -13,7 +13,7 @@ SMILE: Mutual Information Learning for Integration of Single Cell Omics Data
 * anndata
 * pytorch
 
-## Update 05/09/2022
+## Update 05/09/2022 (Using joint-profiling data as reference for integration)
     ##rna_X: RNA-seq data; dna_X: ATAC-seq data, rna_X and dna_X are paired data
     ##rna_X_unpaired: RNA-seq data; dna_X_unpaired: ATAC-seq data, rna_X_unpaired and dna_X_unpaired are unpaired data, and we wish to integrate unpaired data
     ##Both rna_X and dna_X are matrices in which each row represents one cell while each column stands for a feature
