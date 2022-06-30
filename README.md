@@ -25,6 +25,10 @@ SMILE: Mutual Information Learning for Integration of Single Cell Omics Data
     net = SMILE.Paired_SMILE(input_dim_a=rna_X.shape[1],input_dim_b=dna_X.shape[1],clf_out=25)
     ReferenceSMILE_trainer(X_a = rna_X, X_b = dna_X,X_a_unpaired = rna_X_unpaired, X_b_unpaired = dna_X_unpaired, model = net, num_epoch=50)
 
+## Update 06/30/2022 (Identifying shared signatures across modalities)
+
+<img src="https://github.com/rpmccordlab/SMILE/blob/main/littleSMILE.jpg" width="696" height="331">
+
 # Tutorial
 
 ### For quick start
