@@ -166,6 +166,8 @@ def PairedSMILE_trainer(X_a, X_b, model, batch_size = 512, num_epoch=5,
         gc.collect()
         
         
+##-----------------------------------------------------------------------------
+##Updates 05/09/2022
 def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, model, batch_size = 512, num_epoch=5, 
                         f_temp = 0.1, p_temp = 1.0):
     
@@ -177,11 +179,11 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
     for k in range(num_epoch):
         
         model.to(device)
-        n = X_a.shape[0]
+        n = X_a_paired.shape[0]
         r = np.random.permutation(n)
-        X_train_a = X_a[r,:]
+        X_train_a = X_a_paired[r,:]
         X_tensor_A=torch.tensor(X_train_a).float()
-        X_train_b = X_b[r,:]
+        X_train_b = X_b_paired[r,:]
         X_tensor_B=torch.tensor(X_train_b).float()
         
         n2 = X_a_unpaired.shape[0]
@@ -189,11 +191,11 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
         X_train_a_u = X_a_unpaired[r,:]
         X_tensor_Au=torch.tensor(X_train_a_u).float()
     
-        n2 = dna_X_unpaired.shape[0]
+        n2 = X_a_unpaired.shape[0]
         r = np.random.permutation(n2)
         X_train_b_u = X_b_unpaired[r,:]
         X_tensor_Bu=torch.tensor(X_train_b_u).float()
-        n= min(X_a.shape[0],X_a_unpaired.shape[0],X_b_unpaired.shape[0])
+        n= min(X_a_paired.shape[0],X_a_unpaired.shape[0],X_b_unpaired.shape[0])
         
         losses = 0
         
@@ -208,16 +210,13 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
             inputs_bu2 = inputs_bu + torch.normal(0,1,inputs_bu.shape).to(device)
             inputs_bu = inputs_bu + torch.normal(0,1,inputs_bu.shape).to(device)
             
-            feas,o,nfeas,no = net(inputs_a,inputs_b)
-            feasu,ou,nfeasu,nou = net(inputs_au,inputs_bu)
-            feasu2,ou2,nfeasu2,nou2 = net(inputs_au2,inputs_bu2)
-            f_a = net.encoder_a(inputs_a)
-            f_b = net.encoder_b(inputs_b)
+            feas,o,nfeas,no = model(inputs_a,inputs_b)
+            feasu,ou,nfeasu,nou = model(inputs_au,inputs_bu)
+            feasu2,ou2,nfeasu2,nou2 = model(inputs_au2,inputs_bu2)
+            f_a = model.encoder_a(inputs_a)
+            f_b = model.encoder_b(inputs_b)
         
-            fea_mi = f_con(feas,nfeas)+f_con(feas,feas2)
-            p_mi = p_con(o.T,no.T)+p_con(o.T,o2.T)
-        
-            mse_loss = mse(f_a,f_b)#*2.0
+            mse_loss = torch.nn.MSELoss()(f_a,f_b)#*2.0
             fea_mi = f_con(feas,nfeas)*5.0+f_con(feasu,feasu2)+f_con(nfeasu,nfeasu2)#*5.0 or 4.0
             p_mi = p_con(o.T,no.T)*5.0+p_con(ou.T,ou2.T)+p_con(nou.T,nou2.T)#*5.0 or 4.0
         
@@ -229,3 +228,59 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
             losses += loss.data.tolist()
         print("Total loss: "+str(round(losses,4)))
         gc.collect()  
+
+##-----------------------------------------------------------------------------
+##Updates 06/30/2022
+import torch.nn.functional as F
+
+def CosineSimilarity(p, z): #negative cosine similarity 
+    z = z.detach() # stop gradient 
+    p = F.normalize(p, dim=1) # l2-normalize 
+    z = F.normalize(z, dim=1) # l2-normalize 
+    return -(p*z).sum(dim=1).mean()
+
+class littleSMILE(torch.nn.Module):
+    def __init__(self,input_dim_a=30,input_dim_b=30,clf_out=10):
+        super(littleSMILE, self).__init__()
+        self.input_dim_a = input_dim_a
+        self.input_dim_b = input_dim_b
+        self.clf_out = clf_out
+        self.encoder_a = torch.nn.Sequential(
+            torch.nn.Linear(self.input_dim_a, self.clf_out),
+            torch.nn.BatchNorm1d(self.clf_out),
+            torch.nn.LeakyReLU(0.25))
+        self.encoder_b = torch.nn.Sequential(
+            torch.nn.Linear(self.input_dim_b, self.clf_out),
+            torch.nn.BatchNorm1d(self.clf_out),
+            torch.nn.LeakyReLU(0.25))
+        
+    def forward(self, x_a,x_b):
+        
+        out_a = self.encoder_a(x_a)
+        out_b = self.encoder_b(x_b)
+        
+        return out_a,out_b
+    
+def littleSMILE_trainer(x_a,x_b, model,epochs):
+    
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.train()
+    model.to(device)
+    
+    x_a = x_a.to(device)
+    x_b = x_b.to(device)
+    
+    opt = torch.optim.SGD(model.parameters(),lr=0.01, momentum=0.9,weight_decay=5e-4)
+    
+    for e in range(epochs):
+        
+        A,B = model(x_a,x_b)
+        
+        loss = (CosineSimilarity(B,A)+CosineSimilarity(A,B))/2
+        
+        #Backward
+        opt.zero_grad()
+        loss.backward()
+        opt.step()
+        
+        gc.collect()
