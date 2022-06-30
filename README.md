@@ -3,7 +3,7 @@ SMILE: Mutual Information Learning for Integration of Single Cell Omics Data
 
 <img src="https://github.com/rpmccordlab/SMILE/blob/main/SMILE_logo.jpg" width="696" height="331">
 
-# Requirements
+## Requirements
 ###
 * numpy
 * scipy
@@ -33,7 +33,7 @@ To identify shared signatures across modalities via SMILE, please see tutorial
 
     |----SMILE_identify_shared_signatures_across_modalities.ipynb
 
-# Tutorial
+## Tutorial
 
 ### For quick start
     ##rna_X: RNA-seq data; dna_X: ATAC-seq data
