@@ -27,7 +27,11 @@ SMILE: Mutual Information Learning for Integration of Single Cell Omics Data
 
 ## Update 06/30/2022 (Identifying shared signatures across modalities)
 
-<img src="https://github.com/rpmccordlab/SMILE/blob/main/littleSMILE.jpg" width="696" height="331">
+<img src="https://github.com/rpmccordlab/SMILE/blob/main/Tutorial/littleSMILE.jpg" width="696" height="331">
+
+To identify shared signatures across modalities via SMILE, please see tutorial 
+
+    |----SMILE_identify_shared_signatures_across_modalities.ipynb
 
 # Tutorial
 
