@@ -1,5 +1,8 @@
 # SMILE
-SMILE: Mutual Information Learning for Integration of Single Cell Omics Data 
+SMILE: Mutual Information Learning for Integration of Single Cell Omics Data
+
+## Citation
+Xu et al. "SMILE: mutual information learning for integration of single-cell omics data". <a href="https://academic.oup.com/bioinformatics/article-abstract/38/2/476/6384571">Bioinformatics</a>
 
 <img src="https://github.com/rpmccordlab/SMILE/blob/main/SMILE_logo.jpg" width="696" height="331">
 
