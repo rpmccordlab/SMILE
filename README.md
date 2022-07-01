@@ -13,7 +13,6 @@ Xu et al. "SMILE: mutual information learning for integration of single-cell omi
 * pandas
 * scikit-learn
 * scanpy
-* anndata
 * pytorch
 
 ### Update 05/09/2022 (Using joint-profiling data as reference for integration)
