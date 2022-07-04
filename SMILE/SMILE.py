@@ -191,7 +191,7 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
         X_train_a_u = X_a_unpaired[r,:]
         X_tensor_Au=torch.tensor(X_train_a_u).float()
     
-        n2 = X_a_unpaired.shape[0]
+        n2 = X_b_unpaired.shape[0]
         r = np.random.permutation(n2)
         X_train_b_u = X_b_unpaired[r,:]
         X_tensor_Bu=torch.tensor(X_train_b_u).float()
