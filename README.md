@@ -22,8 +22,8 @@ Xu et al. "SMILE: mutual information learning for integration of single-cell omi
     ##each row in rna_X and dna_X is paired for training purpose
     ##Within modality, for example rna_X and rna_X_unpaired, data share the same feature space
     
-    from SMILE import SMILE
-    from SMILE.SMILE import ReferenceSMILE_trainer
+    from SMILE import littleSMILE
+    from SMILE import ReferenceSMILE_trainer
     net = SMILE.Paired_SMILE(input_dim_a=rna_X.shape[1],input_dim_b=dna_X.shape[1],clf_out=25)
     ReferenceSMILE_trainer(X_a = rna_X, X_b = dna_X,X_a_unpaired = rna_X_unpaired, X_b_unpaired = dna_X_unpaired, model = net, num_epoch=50)
 
@@ -43,9 +43,9 @@ To identify shared signatures across modalities via SMILE, please see tutorial
     ##each row in rna_X and dna_X is paired for training purpose 
     
     from SMILE import SMILE
-    from SMILE.SMILE import PairedSMILE_trainer
-    net = SMILE.Paired_SMILE(input_dim_a=rna_X.shape[1],input_dim_b=dna_X.shape[1],clf_out=25)
-    PairedSMILE_trainer(X_a = rna_X, X_b = dna_X, model = net, num_epoch=10)
+    from SMILE import PairedSMILE_trainer
+    net = littleSMILE(input_dim_a=rna_X.shape[1],input_dim_b=dna_X.shape[1],clf_out=30)
+    ReferenceSMILE_trainer(X_rna_paired,X_dna_paired,X_rna_unpaired,X_dna_unpaired,net,batch_size=1024, f_temp = 0.2)
 
 ### For detail
     For use of SMILE in multi-source single-cell transcriptome data
