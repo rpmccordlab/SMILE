@@ -85,20 +85,14 @@ class Paired_SMILE(torch.nn.Module):
             torch.nn.Linear(self.input_dim_a, 1000),
             torch.nn.BatchNorm1d(1000),
             torch.nn.ReLU(),
-            torch.nn.Linear(1000, 512),
-            torch.nn.BatchNorm1d(512),
-            torch.nn.ReLU(),
-            torch.nn.Linear(512, 128),
+            torch.nn.Linear(1000, 128),
             torch.nn.BatchNorm1d(128),
             torch.nn.ReLU())
         self.encoder_b = torch.nn.Sequential(
             torch.nn.Linear(self.input_dim_b, 1000),
             torch.nn.BatchNorm1d(1000),
             torch.nn.ReLU(),
-            torch.nn.Linear(1000, 512),
-            torch.nn.BatchNorm1d(512),
-            torch.nn.ReLU(),
-            torch.nn.Linear(512, 128),
+            torch.nn.Linear(1000, 128),
             torch.nn.BatchNorm1d(128),
             torch.nn.ReLU())
         self.clf = torch.nn.Sequential(
@@ -169,13 +163,13 @@ def PairedSMILE_trainer(X_a, X_b, model, batch_size = 512, num_epoch=5,
 ##-----------------------------------------------------------------------------
 ##Updates 05/09/2022
 def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, model, 
-                           batch_size = 512, pretrain_epoch=10,train_epoch=1000,
-                           f_temp = 0.1):
+                           batch_size = 512, pretrain_epoch=5,train_epoch=1000,
+                           f_temp = 0.25):
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     f_con = ContrastiveLoss(batch_size = batch_size,temperature = f_temp)
-    #opt = torch.optim.Adam(model.parameters(),lr=0.001,weight_decay=5e-4)
-    opt = torch.optim.SGD(model.parameters(),lr=0.01, momentum=0.9,weight_decay=5e-4)
+    opt = torch.optim.Adam(model.parameters(),lr=0.001,weight_decay=5e-4)
+    #opt = torch.optim.SGD(model.parameters(),lr=0.01, momentum=0.9,weight_decay=5e-4)
     
     for k in range(pretrain_epoch):
         model.train()
@@ -206,7 +200,10 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
             feaA,feaB = model(inputs_au,inputs_bu)
             feaA2,feaB2 = model(inputs_au2,inputs_bu2)
         
-            loss = (f_con(feaA,feaA2)+f_con(feaB,feaB2))/2
+            fea_mi = (f_con(feaA,feaA2)+f_con(feaB,feaB2))/2
+            entropy = (Entropy(feaA)+Entropy(feaB))*0.2
+            
+            loss = fea_mi + entropy
             
             opt.zero_grad()
             loss.backward()
@@ -231,7 +228,7 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
         
         A,B = model(x_a,x_b)
         
-        loss = (CosineSimilarity(B,A)+CosineSimilarity(A,B))/2
+        loss = (CosineSimilarity(B,A)+CosineSimilarity(A,B))/2 + (Entropy(A)+Entropy(B))*0.2
         
         #Backward
         opt.zero_grad()
@@ -243,6 +240,14 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
 ##-----------------------------------------------------------------------------
 ##Updates 06/30/2022
 import torch.nn.functional as F
+def Entropy(p): #negative cosine similarity 
+    
+    p = F.normalize(p, dim=1) # l2-normalize 
+    p = F.softmax(p, dim=1)
+    logp = torch.log(p)
+    
+    return -(p*logp).sum(dim=1).mean()
+
 
 def CosineSimilarity(p, z): #negative cosine similarity 
     z = z.detach() # stop gradient 
