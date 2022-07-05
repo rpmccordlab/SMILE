@@ -174,7 +174,8 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     f_con = ContrastiveLoss(batch_size = batch_size,temperature = f_temp)
-    opt = torch.optim.Adam(model.parameters(),lr=0.001,weight_decay=5e-4)
+    #opt = torch.optim.Adam(model.parameters(),lr=0.001,weight_decay=5e-4)
+    opt = torch.optim.SGD(model.parameters(),lr=0.01, momentum=0.9,weight_decay=5e-4)
     
     for k in range(pretrain_epoch):
         model.train()
@@ -205,7 +206,7 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
             feaA,feaB = model(inputs_au,inputs_bu)
             feaA2,feaB2 = model(inputs_au2,inputs_bu2)
         
-            loss = f_con(feaA,feaA2)+f_con(feaB,feaB2)
+            loss = (f_con(feaA,feaA2)+f_con(feaB,feaB2))/2
             
             opt.zero_grad()
             loss.backward()
@@ -224,6 +225,7 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
     x_b = x_b.to(device)
     
     opt = torch.optim.Adam(model.parameters(),lr=0.001,weight_decay=5e-4)
+    #opt = torch.optim.SGD(model.parameters(),lr=0.01, momentum=0.9,weight_decay=5e-4)
     
     for e in range(train_epoch):
         
