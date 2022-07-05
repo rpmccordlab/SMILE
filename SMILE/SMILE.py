@@ -240,19 +240,16 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
 ##-----------------------------------------------------------------------------
 ##Updates 06/30/2022
 import torch.nn.functional as F
-def Entropy(p): #negative cosine similarity 
-    
-    p = F.normalize(p, dim=1) # l2-normalize 
+def Entropy(p):
     p = F.softmax(p, dim=1)
     logp = torch.log(p)
-    
     return -(p*logp).sum(dim=1).mean()
 
 
-def CosineSimilarity(p, z): #negative cosine similarity 
-    z = z.detach() # stop gradient 
-    p = F.normalize(p, dim=1) # l2-normalize 
-    z = F.normalize(z, dim=1) # l2-normalize 
+def CosineSimilarity(p, z):
+    z = z.detach() #stop gradient 
+    p = F.normalize(p, dim=1) #l2-normalize 
+    z = F.normalize(z, dim=1) #l2-normalize 
     return -(p*z).sum(dim=1).mean()
 
 class littleSMILE(torch.nn.Module):
