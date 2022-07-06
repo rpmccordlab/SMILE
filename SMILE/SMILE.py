@@ -8,7 +8,7 @@ import gc
 import numpy as np
 
 import torch
-
+import torch.nn.functional as F
 from contrastive_loss_pytorch import ContrastiveLoss
 
 ##-----------------------------------------------------------------------------
@@ -239,7 +239,6 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
 
 ##-----------------------------------------------------------------------------
 ##Updates 06/30/2022
-import torch.nn.functional as F
 def Entropy(p):
     p = F.softmax(p, dim=1)
     logp = torch.log(p)
@@ -268,10 +267,8 @@ class littleSMILE(torch.nn.Module):
             torch.nn.LeakyReLU(0.25))
         
     def forward(self, x_a,x_b):
-        
         out_a = self.encoder_a(x_a)
         out_b = self.encoder_b(x_b)
-        
         return out_a,out_b
     
 def littleSMILE_trainer(x_a,x_b, model,epochs):
@@ -289,7 +286,7 @@ def littleSMILE_trainer(x_a,x_b, model,epochs):
         
         A,B = model(x_a,x_b)
         
-        loss = (CosineSimilarity(B,A)+CosineSimilarity(A,B))/2
+        loss = (CosineSimilarity(B,A)+CosineSimilarity(A,B)) + Entropy(A)*0.2+Entropy(B)*0.4
         
         #Backward
         opt.zero_grad()
