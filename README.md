@@ -27,6 +27,9 @@ Xu et al. "SMILE: mutual information learning for integration of single-cell omi
     integrater = littleSMILE(input_dim_a=rna_X.shape[1],input_dim_b=dna_X.shape[1],clf_out=20)
     ReferenceSMILE_trainer(rna_X,dna_X,rna_X_unpaired,dna_X_unpaired, integrater, train_epoch=1000)
 
+Please see tutorial that use 10X multiome PBMC data as reference to integrate RNA-seq and ATAC-seq from Granja et al 2019
+    |----SMILE_data_integration_withReference.ipynb
+
 ### Update 06/30/2022 (Identifying shared signatures across modalities)
 
 <img src="https://github.com/rpmccordlab/SMILE/blob/main/Tutorial/littleSMILE.jpg" width="780" height="540">
