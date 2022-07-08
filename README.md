@@ -24,8 +24,8 @@ Xu et al. "SMILE: mutual information learning for integration of single-cell omi
     
     from SMILE import littleSMILE
     from SMILE import ReferenceSMILE_trainer
-    net = littleSMILE(input_dim_a=rna_X.shape[1],input_dim_b=dna_X.shape[1],clf_out=25)
-    ReferenceSMILE_trainer(rna_X, dna_X,rna_X_unpaired, dna_X_unpaired, model = net, train_epoch=500)
+    integrater = littleSMILE(input_dim_a=rna_X.shape[1],input_dim_b=dna_X.shape[1],clf_out=20)
+    ReferenceSMILE_trainer(rna_X,dna_X,rna_X_unpaired,dna_X_unpaired, integrater, train_epoch=1000)
 
 ### Update 06/30/2022 (Identifying shared signatures across modalities)
 
