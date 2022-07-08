@@ -16,6 +16,7 @@ Xu et al. "SMILE: mutual information learning for integration of single-cell omi
 * pytorch
 
 ### Update 05/09/2022 (Using joint-profiling data as reference for integration)
+    
     ##rna_X: RNA-seq data; dna_X: ATAC-seq data, rna_X and dna_X are paired data
     ##rna_X_unpaired: RNA-seq data; dna_X_unpaired: ATAC-seq data, rna_X_unpaired and dna_X_unpaired are unpaired data, and we wish to integrate unpaired data
     ##Both rna_X and dna_X are matrices in which each row represents one cell while each column stands for a feature
@@ -28,6 +29,7 @@ Xu et al. "SMILE: mutual information learning for integration of single-cell omi
     ReferenceSMILE_trainer(rna_X,dna_X,rna_X_unpaired,dna_X_unpaired, integrater, train_epoch=1000)
 
 Please see tutorial that use 10X multiome PBMC data as reference to integrate RNA-seq and ATAC-seq from Granja et al 2019
+    
     |----SMILE_data_integration_withReference.ipynb
 
 ### Update 06/30/2022 (Identifying shared signatures across modalities)
