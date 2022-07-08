@@ -191,16 +191,22 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
             inputs_au = X_tensor_Au[j*batch_size:(j+1)*batch_size,:].to(device)
             inputs_au2 = inputs_au + torch.normal(0,1,inputs_au.shape).to(device)
             inputs_au = inputs_au + torch.normal(0,1,inputs_au.shape).to(device)
+            #inputs_au2 = torch.clone(inputs_au)
+            #inputs_au2[torch.cuda.FloatTensor(inputs_au2.shape).uniform_() >= 0.2]=0 #default 0.2
+            #inputs_au[torch.cuda.FloatTensor(inputs_au.shape).uniform_() >= 0.2]=0 #default 0.2
             
             inputs_bu = X_tensor_Bu[j*batch_size:(j+1)*batch_size,:].to(device)
             inputs_bu2 = inputs_bu + torch.normal(0,1,inputs_bu.shape).to(device)
             inputs_bu = inputs_bu + torch.normal(0,1,inputs_bu.shape).to(device)
+            #inputs_bu2 = torch.clone(inputs_bu)
+            #inputs_bu2[torch.cuda.FloatTensor(inputs_bu2.shape).uniform_() >= 0.2]=0 #default 0.2
+            #inputs_bu[torch.cuda.FloatTensor(inputs_bu.shape).uniform_() >= 0.2]=0 #default 0.2
             
             feaA,feaB = model(inputs_au,inputs_bu)
             feaA2,feaB2 = model(inputs_au2,inputs_bu2)
         
             fea_mi = (f_con(feaA,feaA2)+f_con(feaB,feaB2))
-            entropy = (Entropy(feaA)+Entropy(feaB))*0.2
+            entropy = Entropy(feaA)*0.2+Entropy(feaB)*0.4
             
             loss = fea_mi + entropy
             
@@ -220,14 +226,14 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
     x_a = x_a.to(device)
     x_b = x_b.to(device)
     
-    #opt = torch.optim.Adam(model.parameters(),lr=0.001,weight_decay=5e-4)
     opt = torch.optim.SGD(model.parameters(),lr=0.01, momentum=0.9,weight_decay=5e-4)
     
     for e in range(train_epoch):
         
         A,B = model(x_a,x_b)
         
-        loss = (CosineSimilarity(B,A)+CosineSimilarity(A,B)) + (Entropy(A)+Entropy(B))*0.2
+        loss = (CosineSimilarity(B,A)+CosineSimilarity(A,B)) + \
+            Entropy(A)*0.2+Entropy(B)*0.4
         
         #Backward
         opt.zero_grad()
