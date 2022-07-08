@@ -15,6 +15,16 @@ Xu et al. "SMILE: mutual information learning for integration of single-cell omi
 * scanpy
 * pytorch
 
+## Updates
+
+### Update 06/30/2022 (Identifying shared signatures across modalities)
+
+<img src="https://github.com/rpmccordlab/SMILE/blob/main/Tutorial/littleSMILE.jpg" width="780" height="540">
+
+To identify shared signatures across modalities via SMILE, please see tutorial 
+
+    |----SMILE_identify_shared_signatures_across_modalities.ipynb
+
 ### Update 05/09/2022 (Using joint-profiling data as reference for integration)
     
     ##rna_X: RNA-seq data; dna_X: ATAC-seq data, rna_X and dna_X are paired data
@@ -31,14 +41,6 @@ Xu et al. "SMILE: mutual information learning for integration of single-cell omi
 Please see tutorial using 10X multiome PBMC data as reference to integrate RNA-seq/ATAC-seq from Granja et al 2019
     
     |----SMILE_data_integration_withReference.ipynb
-
-### Update 06/30/2022 (Identifying shared signatures across modalities)
-
-<img src="https://github.com/rpmccordlab/SMILE/blob/main/Tutorial/littleSMILE.jpg" width="780" height="540">
-
-To identify shared signatures across modalities via SMILE, please see tutorial 
-
-    |----SMILE_identify_shared_signatures_across_modalities.ipynb
 
 ## Tutorial
 
