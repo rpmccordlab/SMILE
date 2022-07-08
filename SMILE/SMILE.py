@@ -163,13 +163,12 @@ def PairedSMILE_trainer(X_a, X_b, model, batch_size = 512, num_epoch=5,
 ##-----------------------------------------------------------------------------
 ##Updates 05/09/2022
 def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, model, 
-                           batch_size = 512, pretrain_epoch=5,train_epoch=1000,
-                           f_temp = 0.25):
+                           pretrain_epoch=10,train_epoch=1000,
+                           batch_size = 1024, f_temp = 0.2):
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     f_con = ContrastiveLoss(batch_size = batch_size,temperature = f_temp)
-    opt = torch.optim.Adam(model.parameters(),lr=0.001,weight_decay=5e-4)
-    #opt = torch.optim.SGD(model.parameters(),lr=0.01, momentum=0.9,weight_decay=5e-4)
+    opt = torch.optim.SGD(model.parameters(),lr=0.01, momentum=0.9,weight_decay=5e-4)
     
     for k in range(pretrain_epoch):
         model.train()
@@ -200,7 +199,7 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
             feaA,feaB = model(inputs_au,inputs_bu)
             feaA2,feaB2 = model(inputs_au2,inputs_bu2)
         
-            fea_mi = (f_con(feaA,feaA2)+f_con(feaB,feaB2))/2
+            fea_mi = (f_con(feaA,feaA2)+f_con(feaB,feaB2))
             entropy = (Entropy(feaA)+Entropy(feaB))*0.2
             
             loss = fea_mi + entropy
@@ -221,14 +220,14 @@ def ReferenceSMILE_trainer(X_a_paired, X_b_paired,X_a_unpaired,X_b_unpaired, mod
     x_a = x_a.to(device)
     x_b = x_b.to(device)
     
-    opt = torch.optim.Adam(model.parameters(),lr=0.001,weight_decay=5e-4)
-    #opt = torch.optim.SGD(model.parameters(),lr=0.01, momentum=0.9,weight_decay=5e-4)
+    #opt = torch.optim.Adam(model.parameters(),lr=0.001,weight_decay=5e-4)
+    opt = torch.optim.SGD(model.parameters(),lr=0.01, momentum=0.9,weight_decay=5e-4)
     
     for e in range(train_epoch):
         
         A,B = model(x_a,x_b)
         
-        loss = (CosineSimilarity(B,A)+CosineSimilarity(A,B))/2 + (Entropy(A)+Entropy(B))*0.2
+        loss = (CosineSimilarity(B,A)+CosineSimilarity(A,B)) + (Entropy(A)+Entropy(B))*0.2
         
         #Backward
         opt.zero_grad()
