@@ -33,6 +33,8 @@ To identify shared signatures across modalities via SMILE, please see tutorial
     ##each row in rna_X and dna_X is paired for training purpose
     ##Within modality, for example rna_X and rna_X_unpaired, data share the same feature space
     
+    ## Proecessed data could be found at https://doi.org/10.5281/zenodo.7776066
+    
     from SMILE import littleSMILE
     from SMILE import ReferenceSMILE_trainer
     integrater = littleSMILE(input_dim_a=rna_X.shape[1],input_dim_b=dna_X.shape[1],clf_out=20)
